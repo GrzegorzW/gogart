@@ -17,3 +17,8 @@ services:
             - '@validator'
         tags:
             - { name: request.param_converter, priority: -2 }
+
+    request.uuid_converter:
+        class: Gogart\Http\Request\ParamConverter\UuidParamConverter
+        tags:
+            - { name: request.param_converter, priority: 1 }
