@@ -1,0 +1,10 @@
+services:
+    _defaults:
+        public: true
+        tags:
+            - { name: 'prooph_service_bus.gogart_command_bus.route_target', message_detection: true }
+
+    command_handler.add_product_handler:
+        class: Gogart\Application\Product\Command\Handler\AddProductHandler
+        arguments:
+            - '@repository.product'
