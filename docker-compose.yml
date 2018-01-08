@@ -1,0 +1,28 @@
+version: "2"
+services:
+    php-fpm:
+        build: docker/php-fpm
+        volumes:
+            - .:/gogart
+            - ./docker/php-fpm/php-ini-overrides.ini:/usr/local/etc/php/conf.d/php-ini-overrides.ini
+
+    webserver:
+        image: nginx
+        working_dir: /gogart
+        volumes:
+            - .:/gogart
+            - ./docker/nginx:/etc/nginx/conf.d
+        ports:
+            - "127.0.0.1:8080:80"
+
+    db:
+        image: mysql:5.7
+        volumes:
+            - ./docker/data/db:/var/lib/mysql
+        ports:
+          - "127.0.0.1:13306:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: gogart
+            MYSQL_DATABASE: gogart
+            MYSQL_USER: gogart
+            MYSQL_PASSWORD: gogart
