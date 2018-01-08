@@ -4,7 +4,12 @@ services:
         tags:
             - { name: 'prooph_service_bus.gogart_command_bus.route_target', message_detection: true }
 
-    command_handler.add_product_handler:
+    command_handler.product.add:
         class: Gogart\Application\Product\Command\Handler\AddProductHandler
+        arguments:
+            - '@repository.product'
+
+    command_handler.product.change_title:
+        class: Gogart\Application\Product\Command\Handler\ChangeProductTitleHandler
         arguments:
             - '@repository.product'

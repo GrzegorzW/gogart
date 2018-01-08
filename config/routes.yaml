@@ -2,3 +2,8 @@ product_add:
     path: /products
     methods: [POST]
     defaults: { _controller: 'controller.product:add' }
+
+product_change_title:
+    path: /products/{productId}/title
+    methods: [PATCH]
+    defaults: { _controller: 'controller.product:changeTitle' }
