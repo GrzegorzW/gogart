@@ -8,11 +8,13 @@
         "prooph/event-sourcing": "^5.3",
         "prooph/service-bus-symfony-bundle": "^0.6.0",
         "ramsey/uuid-doctrine": "^1.4",
+        "react/promise": "^2.5",
         "sensio/framework-extra-bundle": "^5.1",
         "symfony/console": "^4.0",
         "symfony/flex": "^1.0",
         "symfony/framework-bundle": "^4.0",
         "symfony/lts": "^4@dev",
+        "symfony/monolog-bundle": "^3.1",
         "symfony/orm-pack": "^1.0",
         "symfony/validator": "^4.0",
         "symfony/yaml": "^4.0"
