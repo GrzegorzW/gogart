@@ -7,7 +7,7 @@ namespace Gogart\Model\Cart;
 use Gogart\Model\Cart\Event\CartCreated;
 use Gogart\Model\Cart\Event\ProductAddedToCart;
 use Gogart\Model\Cart\Event\ProductRemovedFromCart;
-use Gogart\Model\Product\Exception\ProductNotFoundInCart;
+use Gogart\Model\Product\Exception\ProductNotFoundInCartException;
 use Prooph\EventSourcing\AggregateChanged;
 use Prooph\EventSourcing\AggregateRoot;
 use Ramsey\Uuid\Uuid;
@@ -27,8 +27,10 @@ class Cart extends AggregateRoot
 
     /**
      * @param UuidInterface $id
+     *
+     * @return Cart
      */
-    public function createCart(UuidInterface $id): void
+    public static function createCart(UuidInterface $id): Cart
     {
         $instance = new self();
 
@@ -37,6 +39,8 @@ class Cart extends AggregateRoot
         );
 
         $instance->recordThat($aggregateChanged);
+
+        return $instance;
     }
 
     /**
@@ -57,12 +61,12 @@ class Cart extends AggregateRoot
     /**
      * @param UuidInterface $productId
      *
-     * @throws ProductNotFoundInCart
+     * @throws ProductNotFoundInCartException
      */
     public function removeProduct(UuidInterface $productId): void
     {
         if ($this->isProductInCart($productId) === false) {
-            throw new ProductNotFoundInCart('Product not in cart');
+            throw new ProductNotFoundInCartException('Product not in cart');
         }
 
         $aggregateChanged = ProductRemovedFromCart::occur(

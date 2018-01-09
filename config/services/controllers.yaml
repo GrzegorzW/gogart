@@ -8,3 +8,10 @@ services:
             - '@prooph_service_bus.gogart_command_bus'
             - '@prooph_service_bus.gogart_query_bus'
             - '@jms_serializer'
+
+    controller.cart:
+        class: Gogart\Http\Controller\CartController
+        arguments:
+            - '@prooph_service_bus.gogart_command_bus'
+            - '@prooph_service_bus.gogart_query_bus'
+            - '@jms_serializer'

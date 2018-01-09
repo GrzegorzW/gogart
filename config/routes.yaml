@@ -22,3 +22,8 @@ product_list:
     path: /products
     methods: [GET]
     defaults: { _controller: 'controller.product:list' }
+
+cart_list:
+    path: /carts
+    methods: [POST]
+    defaults: { _controller: 'controller.cart:add' }

@@ -110,6 +110,15 @@
     "prooph/event-store": {
         "version": "v7.3.1"
     },
+    "prooph/event-store-bus-bridge": {
+        "version": "v3.1.0"
+    },
+    "prooph/event-store-symfony-bundle": {
+        "version": "1.0-dev"
+    },
+    "prooph/pdo-event-store": {
+        "version": "v1.6.0"
+    },
     "prooph/service-bus": {
         "version": "v6.2.1"
     },
@@ -154,6 +163,9 @@
     },
     "symfony/cache": {
         "version": "v4.0.3"
+    },
+    "symfony/class-loader": {
+        "version": "v3.4.3"
     },
     "symfony/config": {
         "version": "v4.0.3"
