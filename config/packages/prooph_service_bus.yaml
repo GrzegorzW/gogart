@@ -1,3 +1,12 @@
 prooph_service_bus:
     command_buses:
         gogart_command_bus: ~
+
+    query_buses:
+        gogart_query_bus:
+            plugins:
+                  - 'prooph_service_bus.on_event_invoke_strategy'
+            router:
+                type: 'prooph_service_bus.query_bus_router'
+                routes:
+                    Gogart\Application\Product\Query\ListProductQuery: '@query_handler.product.list'

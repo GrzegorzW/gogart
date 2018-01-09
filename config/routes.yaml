@@ -17,3 +17,8 @@ product_remove:
     path: /products/{productId}
     methods: [DELETE]
     defaults: { _controller: 'controller.product:remove' }
+
+product_list:
+    path: /products
+    methods: [GET]
+    defaults: { _controller: 'controller.product:list' }

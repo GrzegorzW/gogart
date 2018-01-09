@@ -4,3 +4,8 @@ services:
         factory: ["@doctrine", "getRepository"]
         arguments:
             - Gogart\Model\Product\Product
+
+    read_repository.product:
+        class: Gogart\Infrastructure\Application\Product\Query\Repository\ProductReadRepository
+        arguments:
+            - '@doctrine.dbal.default_connection'
