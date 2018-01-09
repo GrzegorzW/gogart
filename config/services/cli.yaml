@@ -1,0 +1,10 @@
+services:
+    _defaults:
+        public: true
+        tags:
+            - console.command
+
+    command.event_stream.create:
+        class: Gogart\Cli\EventStore\CreateEventStreamCommand
+        arguments:
+            - '@prooph_event_store.cart_store'
