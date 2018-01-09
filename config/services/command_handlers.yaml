@@ -13,3 +13,8 @@ services:
         class: Gogart\Application\Product\Command\Handler\ChangeProductTitleHandler
         arguments:
             - '@repository.product'
+
+    command_handler.product.change_price:
+        class: Gogart\Application\Product\Command\Handler\ChangeProductPriceHandler
+        arguments:
+            - '@repository.product'
