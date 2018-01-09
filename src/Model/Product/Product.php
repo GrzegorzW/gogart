@@ -53,7 +53,7 @@ class Product
     /**
      * @throws ProductAlreadyRemoved
      */
-    public function removeProduct(): void
+    public function remove(): void
     {
         if ($this->removedAt !== null) {
             throw new ProductAlreadyRemoved('Product already removed');

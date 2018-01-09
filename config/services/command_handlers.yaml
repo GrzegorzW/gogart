@@ -18,3 +18,8 @@ services:
         class: Gogart\Application\Product\Command\Handler\ChangeProductPriceHandler
         arguments:
             - '@repository.product'
+
+    command_handler.product.remove:
+        class: Gogart\Application\Product\Command\Handler\RemoveProductHandler
+        arguments:
+            - '@repository.product'

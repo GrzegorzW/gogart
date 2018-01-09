@@ -24,13 +24,18 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
      */
     public function get(UuidInterface $productId): Product
     {
-        $restaurant = $this->find($productId->toString());
+        $product = $this->findOneBy(
+            [
+                'id' => $productId->toString(),
+                'removedAt' => null
+            ]
+        );
 
-        if (!$restaurant instanceof Product) {
+        if (!$product instanceof Product) {
             throw new ProductNotFound(sprintf('Product %s not found', $productId->toString()));
         }
 
-        return $restaurant;
+        return $product;
     }
 
     /**
