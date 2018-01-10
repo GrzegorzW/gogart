@@ -28,7 +28,12 @@ cart_add:
     methods: [POST]
     defaults: { _controller: 'controller.cart:addCart' }
 
-cart_product_add:
+cart_add_product_to_cart:
     path: /carts/{cartId}/products/{productId}
     methods: [POST]
     defaults: { _controller: 'controller.cart:addProduct' }
+
+cart_remove_product_from_cart:
+    path: /carts/{cartId}/products/{productId}
+    methods: [DELETE]
+    defaults: { _controller: 'controller.cart:removeProduct' }
