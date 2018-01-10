@@ -7,6 +7,7 @@ namespace Gogart\Model\Cart;
 use Gogart\Model\Cart\Event\CartCreated;
 use Gogart\Model\Cart\Event\ProductAddedToCart;
 use Gogart\Model\Cart\Event\ProductRemovedFromCart;
+use Gogart\Model\Cart\Exception\CartSizeLimitReachedException;
 use Gogart\Model\Product\Exception\ProductNotFoundInCartException;
 use Prooph\EventSourcing\AggregateChanged;
 use Prooph\EventSourcing\AggregateRoot;
@@ -15,6 +16,8 @@ use Ramsey\Uuid\UuidInterface;
 
 class Cart extends AggregateRoot
 {
+    private const CART_SIZE_LIMIT = 3;
+
     /**
      * @var UuidInterface
      */
@@ -45,9 +48,19 @@ class Cart extends AggregateRoot
 
     /**
      * @param UuidInterface $productId
+     *
+     * @throws CartSizeLimitReachedException
      */
     public function addProduct(UuidInterface $productId): void
     {
+        if ($this->isProductInCart($productId) === true) {
+            return;
+        }
+
+        if (\count($this->products) === self::CART_SIZE_LIMIT) {
+            throw new CartSizeLimitReachedException('Limit reached');
+        }
+
         $aggregateChanged = ProductAddedToCart::occur(
             $this->id->toString(),
             [
@@ -56,6 +69,16 @@ class Cart extends AggregateRoot
         );
 
         $this->recordThat($aggregateChanged);
+    }
+
+    /**
+     * @param UuidInterface $productId
+     *
+     * @return bool
+     */
+    private function isProductInCart(UuidInterface $productId): bool
+    {
+        return \in_array($productId->toString(), $this->products, true);
     }
 
     /**
@@ -77,16 +100,6 @@ class Cart extends AggregateRoot
         );
 
         $this->recordThat($aggregateChanged);
-    }
-
-    /**
-     * @param UuidInterface $productId
-     *
-     * @return bool
-     */
-    private function isProductInCart(UuidInterface $productId): bool
-    {
-        return isset($this->products[$productId->toString()]);
     }
 
     /**
@@ -132,14 +145,7 @@ class Cart extends AggregateRoot
      */
     private function applyProductAddedToCart(ProductAddedToCart $event): void
     {
-        $productId = $event->getProductId();
-        $amountOfProduct = 1;
-
-        if (isset($this->products[$productId])) {
-            $amountOfProduct = $this->products[$productId] + 1;
-        }
-
-        $this->products[$productId] = $amountOfProduct;
+        $this->products[] = $event->getProductId();
     }
 
     /**
@@ -147,18 +153,10 @@ class Cart extends AggregateRoot
      */
     private function applyProductRemovedFromCart(ProductRemovedFromCart $event): void
     {
-        $productId = $event->getProductId();
+        $productKeyDelete = array_search($event->getProductId(), $this->products, true);
 
-        $amountOfProduct = $this->products[$productId] ?? null;
-
-        if (!$amountOfProduct) {
-            return;
-        }
-
-        $this->products[$productId]--;
-
-        if ($amountOfProduct === 0) {
-            unset($this->products[$productId]);
+        if ($productKeyDelete !== false) {
+            unset($this->products[$productKeyDelete]);
         }
     }
 }
