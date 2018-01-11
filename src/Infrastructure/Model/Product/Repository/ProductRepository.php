@@ -27,7 +27,7 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
         $restaurant = $this->find($productId->toString());
 
         if (!$restaurant instanceof Product) {
-            throw new ProductNotFound(sprintf('Restaurant %s not found', $productId->toString()));
+            throw new ProductNotFound(sprintf('Product %s not found', $productId->toString()));
         }
 
         return $restaurant;
