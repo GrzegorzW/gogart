@@ -12,3 +12,8 @@ product_change_price:
     path: /products/{productId}/price
     methods: [PATCH]
     defaults: { _controller: 'controller.product:changePrice' }
+
+product_remove:
+    path: /products/{productId}
+    methods: [DELETE]
+    defaults: { _controller: 'controller.product:remove' }

@@ -7,6 +7,7 @@ namespace Gogart\Http\Controller;
 use Gogart\Application\Product\Command\AddProductCommand;
 use Gogart\Application\Product\Command\ChangeProductPriceCommand;
 use Gogart\Application\Product\Command\ChangeProductTitleCommand;
+use Gogart\Application\Product\Command\RemoveProductCommand;
 use Gogart\Application\Product\Data\PriceData;
 use Gogart\Application\Product\Data\ProductData;
 use Gogart\Application\Product\Data\TitleData;
@@ -123,6 +124,26 @@ class ProductController
         $command = new ChangeProductPriceCommand([
             'id' => $productId,
             'data' => $data
+        ]);
+
+        $this->commandBus->dispatch($command);
+
+        return new JsonResponse('', Response::HTTP_NO_CONTENT, [], true);
+    }
+
+    /**
+     * @param UuidInterface $productId
+     *
+     * @return Response
+     *
+     * @throws NotFoundHttpException
+     * @throws CommandDispatchException
+     * @throws BadRequestHttpException
+     */
+    public function remove(UuidInterface $productId): Response
+    {
+        $command = new RemoveProductCommand([
+            'id' => $productId
         ]);
 
         $this->commandBus->dispatch($command);
