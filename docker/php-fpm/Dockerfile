@@ -3,6 +3,7 @@ FROM php:7.1-fpm
 RUN apt-get update && apt-get -y --no-install-recommends install \
         git \
         unzip \
+        netcat \
     && pecl install xdebug-2.5.4 \
     && docker-php-ext-install \
         pdo \

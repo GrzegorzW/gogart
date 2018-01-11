@@ -22,6 +22,16 @@ class ProductView
     private $price;
 
     /**
+     * @var int
+     */
+    private $priceAmount;
+
+    /**
+     * @var string
+     */
+    private $priceCurrency;
+
+    /**
      * @param string $id
      * @param string $title
      * @param int $priceAmount
@@ -32,5 +42,23 @@ class ProductView
         $this->id = $id;
         $this->title = $title;
         $this->price = sprintf('%0.2f %s', $priceAmount / 100, $priceCurrency);
+        $this->priceAmount = $priceAmount;
+        $this->priceCurrency = $priceCurrency;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPriceAmount(): int
+    {
+        return $this->priceAmount;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPriceCurrency(): string
+    {
+        return $this->priceCurrency;
     }
 }

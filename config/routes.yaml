@@ -37,3 +37,8 @@ cart_remove_product_from_cart:
     path: /carts/{cartId}/products/{productId}
     methods: [DELETE]
     defaults: { _controller: 'controller.cart:removeProduct' }
+
+cart_get:
+    path: /carts/{cartId}
+    methods: [GET]
+    defaults: { _controller: 'controller.cart:get' }

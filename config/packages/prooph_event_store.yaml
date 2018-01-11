@@ -7,6 +7,14 @@ prooph_event_store:
                     repository_class: Gogart\Infrastructure\Model\Cart\Repository\CartRepository
                     aggregate_type: Gogart\Model\Cart\Cart
                     aggregate_translator: prooph_event_sourcing.aggregate_translator
+    projection_managers:
+        cart_projection_manager:
+            event_store: Prooph\EventStore\Pdo\MySqlEventStore
+            connection: 'doctrine.pdo.connection'
+            projections:
+                cart_projection:
+                    read_model: 'read_model.cart'
+                    projection: Gogart\Infrastructure\Projection\CartProjection
 
 services:
     Prooph\EventStore\Pdo\MySqlEventStore:
