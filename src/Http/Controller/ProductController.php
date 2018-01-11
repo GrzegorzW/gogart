@@ -8,13 +8,18 @@ use Gogart\Application\Product\Command\AddProductCommand;
 use Gogart\Application\Product\Command\ChangeProductPriceCommand;
 use Gogart\Application\Product\Command\ChangeProductTitleCommand;
 use Gogart\Application\Product\Command\RemoveProductCommand;
+use Gogart\Application\Product\Data\PaginationData;
 use Gogart\Application\Product\Data\PriceData;
 use Gogart\Application\Product\Data\ProductData;
 use Gogart\Application\Product\Data\TitleData;
+use Gogart\Application\Product\Query\ListProductQuery;
+use Gogart\Application\Product\Query\ViewModel\ProductListView;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
 use Prooph\ServiceBus\CommandBus;
 use Prooph\ServiceBus\Exception\CommandDispatchException;
+use Prooph\ServiceBus\Exception\RuntimeException;
+use Prooph\ServiceBus\QueryBus;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -30,19 +35,27 @@ class ProductController
     private $commandBus;
 
     /**
+     * @var QueryBus
+     */
+    private $queryBus;
+
+    /**
      * @var SerializerInterface
      */
     private $serializer;
 
     /**
      * @param CommandBus $commandBus
+     * @param QueryBus $queryBus
      * @param SerializerInterface $serializer
      */
     public function __construct(
         CommandBus $commandBus,
+        QueryBus $queryBus,
         SerializerInterface $serializer
     ) {
         $this->commandBus = $commandBus;
+        $this->queryBus = $queryBus;
         $this->serializer = $serializer;
     }
 
@@ -71,11 +84,11 @@ class ProductController
     }
 
     /**
-     * @param array $data
+     * @param mixed $data
      *
      * @return string
      */
-    private function serialize(array $data): string
+    private function serialize($data): string
     {
         $serializationContext = new SerializationContext();
         $serializationContext->setSerializeNull(true);
@@ -149,5 +162,34 @@ class ProductController
         $this->commandBus->dispatch($command);
 
         return new JsonResponse('', Response::HTTP_NO_CONTENT, [], true);
+    }
+
+    /**
+     * @param PaginationData $data
+     *
+     * @return Response
+     *
+     * @throws RuntimeException
+     */
+    public function list(PaginationData $data): Response
+    {
+        $response = null;
+
+        $query = new ListProductQuery($data);
+
+        $this->queryBus
+            ->dispatch($query)
+            ->then(
+                function (ProductListView $view) use (&$response) {
+                    $data = $this->serialize($view);
+
+                    $response = new JsonResponse($data, Response::HTTP_OK, [], true);
+                },
+                function () use (&$response) {
+                    $response = new BadRequestHttpException('Unable to list products', Response::HTTP_BAD_REQUEST);
+                }
+            );
+
+        return $response;
     }
 }

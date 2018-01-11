@@ -1,0 +1,8 @@
+services:
+    _defaults:
+        public: true
+
+    query_handler.product.list:
+        class: Gogart\Application\Product\Query\Handler\ListProductHandler
+        arguments:
+            - '@read_repository.product'

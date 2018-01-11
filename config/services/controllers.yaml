@@ -6,4 +6,5 @@ services:
         class: Gogart\Http\Controller\ProductController
         arguments:
             - '@prooph_service_bus.gogart_command_bus'
+            - '@prooph_service_bus.gogart_query_bus'
             - '@jms_serializer'
