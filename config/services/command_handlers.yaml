@@ -34,3 +34,9 @@ services:
         arguments:
             - '@repository.cart'
             - '@repository.product'
+
+    command_handler.cart.remove_product_from_cart:
+        class: Gogart\Application\Cart\Command\Handler\RemoveProductFromCartHandler
+        arguments:
+            - '@repository.cart'
+            - '@repository.product'

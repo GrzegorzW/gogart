@@ -6,6 +6,7 @@ namespace Gogart\Http\Controller;
 
 use Gogart\Application\Cart\Command\AddCartCommand;
 use Gogart\Application\Cart\Command\AddProductToCartCommand;
+use Gogart\Application\Cart\Command\RemoveProductFromCartCommand;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
 use Prooph\ServiceBus\CommandBus;
@@ -98,6 +99,28 @@ class CartController
     public function addProduct(UuidInterface $cartId, UuidInterface $productId): Response
     {
         $command = new AddProductToCartCommand([
+            'cartId' => $cartId,
+            'productId' => $productId
+        ]);
+
+        $this->commandBus->dispatch($command);
+
+        return new JsonResponse('', Response::HTTP_NO_CONTENT, [], true);
+    }
+
+
+
+    /**
+     * @param UuidInterface $cartId
+     * @param UuidInterface $productId
+     *
+     * @return Response
+     *
+     * @throws CommandDispatchException
+     */
+    public function removeProduct(UuidInterface $cartId, UuidInterface $productId): Response
+    {
+        $command = new RemoveProductFromCartCommand([
             'cartId' => $cartId,
             'productId' => $productId
         ]);
