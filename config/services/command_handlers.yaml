@@ -23,3 +23,8 @@ services:
         class: Gogart\Application\Product\Command\Handler\RemoveProductHandler
         arguments:
             - '@repository.product'
+
+    command_handler.cart.add:
+        class: Gogart\Application\Cart\Command\Handler\AddCartHandler
+        arguments:
+            - '@repository.cart'

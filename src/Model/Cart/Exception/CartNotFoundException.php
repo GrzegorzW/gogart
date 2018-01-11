@@ -6,6 +6,6 @@ namespace Gogart\Model\Product\Exception;
 
 use Gogart\Model\Shared\Exception\DomainException;
 
-class ProductNotFoundInCart extends DomainException
+class CartNotFoundException extends DomainException
 {
 }
