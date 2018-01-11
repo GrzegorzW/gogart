@@ -53,6 +53,6 @@ class CreateEventStreamCommand extends Command
 
         $this->eventStore->create($stream);
 
-        $output->writeln('<info>Event was created</info>');
+        $output->writeln('<info>Event stream created</info>');
     }
 }
