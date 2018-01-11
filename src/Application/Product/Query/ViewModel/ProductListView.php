@@ -7,36 +7,39 @@ namespace Gogart\Application\Product\Query\ViewModel;
 class ProductListView
 {
     /**
-     * @var array
+     * @var ProductView[]
      */
     private $products;
 
     /**
-     * @var int
+     * @param ProductView[]
      */
-    private $page;
-
-    /**
-     * @var int
-     */
-    private $perPage;
-
-    /**
-     * @var int
-     */
-    private $totalCount;
-
-    /**
-     * @param array $products
-     * @param int $page
-     * @param int $perPage
-     * @param int $totalCount
-     */
-    public function __construct(array $products, int $page, int $perPage, int $totalCount)
+    public function __construct(array $products)
     {
         $this->products = $products;
-        $this->page = $page;
-        $this->perPage = $perPage;
-        $this->totalCount = $totalCount;
+    }
+
+    /**
+     * @return string|null
+     * @throws \InvalidArgumentException
+     */
+    public function calculateTotalPrice(): ?string
+    {
+        if (\count($this->products) === 0) {
+            return null;
+        }
+
+        $totalAmount = 0;
+        $expectedCurrency = $this->products[0]->getPriceCurrency();
+
+        foreach ($this->products as $product) {
+            if ($product->getPriceCurrency() !== $expectedCurrency) {
+                throw new \InvalidArgumentException('Cannot calculate total price');
+            }
+
+            $totalAmount += $product->getPriceAmount();
+        }
+
+        return sprintf('%0.2f %s', $totalAmount / 100, $expectedCurrency);
     }
 }

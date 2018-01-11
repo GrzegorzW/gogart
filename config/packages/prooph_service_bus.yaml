@@ -10,3 +10,4 @@ prooph_service_bus:
                 type: 'prooph_service_bus.query_bus_router'
                 routes:
                     Gogart\Application\Product\Query\ListProductQuery: '@query_handler.product.list'
+                    Gogart\Application\Cart\Query\CartQuery: '@query_handler.cart'

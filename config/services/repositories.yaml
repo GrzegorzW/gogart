@@ -9,3 +9,9 @@ services:
         class: Gogart\Infrastructure\Application\Product\Query\Repository\ProductReadRepository
         arguments:
             - '@doctrine.dbal.default_connection'
+
+    read_repository.cart:
+        class: Gogart\Infrastructure\Projection\CartReadRepository
+        arguments:
+            - '@doctrine.dbal.default_connection'
+            - '@read_repository.product'

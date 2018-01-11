@@ -13,7 +13,7 @@ use Gogart\Application\Product\Data\PriceData;
 use Gogart\Application\Product\Data\ProductData;
 use Gogart\Application\Product\Data\TitleData;
 use Gogart\Application\Product\Query\ListProductQuery;
-use Gogart\Application\Product\Query\ViewModel\ProductListView;
+use Gogart\Application\Product\Query\ViewModel\PaginatedProductListView;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
 use Prooph\ServiceBus\CommandBus;
@@ -169,6 +169,7 @@ class ProductController
      *
      * @return Response
      *
+     * @throws \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
      * @throws RuntimeException
      */
     public function list(PaginationData $data): Response
@@ -180,15 +181,16 @@ class ProductController
         $this->queryBus
             ->dispatch($query)
             ->then(
-                function (ProductListView $view) use (&$response) {
+                function (PaginatedProductListView $view) use (&$response) {
                     $data = $this->serialize($view);
 
                     $response = new JsonResponse($data, Response::HTTP_OK, [], true);
-                },
-                function () use (&$response) {
-                    $response = new BadRequestHttpException('Unable to list products', Response::HTTP_BAD_REQUEST);
                 }
             );
+
+        if ($response === null) {
+            throw new BadRequestHttpException('Unable to list products');
+        }
 
         return $response;
     }

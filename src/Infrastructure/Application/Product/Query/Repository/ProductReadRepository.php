@@ -6,8 +6,10 @@ namespace Gogart\Infrastructure\Application\Product\Query\Repository;
 
 use Doctrine\DBAL\Connection;
 use Gogart\Application\Product\Query\Repository\ProductReadRepositoryInterface;
+use Gogart\Application\Product\Query\ViewModel\PaginatedProductListView;
 use Gogart\Application\Product\Query\ViewModel\ProductListView;
 use Gogart\Application\Product\Query\ViewModel\ProductView;
+use Ramsey\Uuid\UuidInterface;
 
 class ProductReadRepository implements ProductReadRepositoryInterface
 {
@@ -28,9 +30,9 @@ class ProductReadRepository implements ProductReadRepositoryInterface
      * @param int $page
      * @param int $perPage
      *
-     * @return ProductListView
+     * @return PaginatedProductListView
      */
-    public function list(int $page, int $perPage): ProductListView
+    public function list(int $page, int $perPage): PaginatedProductListView
     {
         $offset = ($page - 1) * $perPage;
 
@@ -50,7 +52,9 @@ class ProductReadRepository implements ProductReadRepositoryInterface
 
         $rows = $stmt->fetchAll();
 
-        return $this->hydrate($rows, $page, $perPage, $totalCount);
+        $products = $this->hydrateProducts($rows);
+
+        return new PaginatedProductListView($products, $page, $perPage, $totalCount);
     }
 
     /**
@@ -72,15 +76,12 @@ class ProductReadRepository implements ProductReadRepositoryInterface
 
     /**
      * @param array $rawProducts
-     * @param int $page
-     * @param int $perPage
-     * @param int $totalCount
      *
      * @return ProductListView
      */
-    private function hydrate(array $rawProducts, int $page, int $perPage, int $totalCount): ProductListView
+    private function hydrateProducts(array $rawProducts): ProductListView
     {
-        $list = array_map(
+        $products = array_map(
             function ($productData) {
                 return new ProductView(
                     $productData['id'],
@@ -92,6 +93,28 @@ class ProductReadRepository implements ProductReadRepositoryInterface
             $rawProducts
         );
 
-        return new ProductListView($list, $page, $perPage, $totalCount);
+        return new ProductListView($products);
+    }
+
+    /**
+     * @param UuidInterface[] $ids
+     *
+     * @return ProductListView
+     */
+    public function getByIds(array $ids): ProductListView
+    {
+        $qb = $this->connection->createQueryBuilder();
+
+        $qb
+            ->select('id, title, price_amount, price_currency')
+            ->from('product')
+            ->andWhere('id IN (:product_ids)')
+            ->setParameter('product_ids', $ids, Connection::PARAM_STR_ARRAY);
+
+        $stmt = $qb->execute();
+
+        $rows = $stmt->fetchAll();
+
+        return $this->hydrateProducts($rows);
     }
 }

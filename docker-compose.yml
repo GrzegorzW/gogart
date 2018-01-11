@@ -6,6 +6,16 @@ services:
             - .:/gogart
             - ./docker/php-fpm/php-ini-overrides.ini:/usr/local/etc/php/conf.d/php-ini-overrides.ini
 
+    projection_cart:
+        build: docker/php-fpm
+        entrypoint:
+            - /gogart/docker/php-fpm/wait_for_sql.sh
+        volumes:
+            - .:/gogart
+        depends_on:
+            - db
+        command: php bin/console event-store:projection:run cart_projection
+
     webserver:
         image: nginx
         working_dir: /gogart

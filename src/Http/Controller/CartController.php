@@ -7,10 +7,13 @@ namespace Gogart\Http\Controller;
 use Gogart\Application\Cart\Command\AddCartCommand;
 use Gogart\Application\Cart\Command\AddProductToCartCommand;
 use Gogart\Application\Cart\Command\RemoveProductFromCartCommand;
+use Gogart\Application\Cart\Query\CartQuery;
+use Gogart\Application\Cart\Query\ViewModel\CartView;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
 use Prooph\ServiceBus\CommandBus;
 use Prooph\ServiceBus\Exception\CommandDispatchException;
+use Prooph\ServiceBus\Exception\RuntimeException;
 use Prooph\ServiceBus\QueryBus;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -108,8 +111,6 @@ class CartController
         return new JsonResponse('', Response::HTTP_NO_CONTENT, [], true);
     }
 
-
-
     /**
      * @param UuidInterface $cartId
      * @param UuidInterface $productId
@@ -128,5 +129,38 @@ class CartController
         $this->commandBus->dispatch($command);
 
         return new JsonResponse('', Response::HTTP_NO_CONTENT, [], true);
+    }
+
+    /**
+     * @param UuidInterface $cartId
+     *
+     * @return Response
+     *
+     * @throws \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
+     * @throws RuntimeException
+     */
+    public function get(UuidInterface $cartId): Response
+    {
+        $response = null;
+
+        $query = new CartQuery([
+            'cartId' => $cartId
+        ]);
+
+        $this->queryBus
+            ->dispatch($query)
+            ->then(
+                function (CartView $view) use (&$response) {
+                    $data = $this->serialize($view);
+
+                    $response = new JsonResponse($data, Response::HTTP_OK, [], true);
+                }
+            );
+
+        if ($response === null) {
+            throw new BadRequestHttpException('Unable to get cart');
+        }
+
+        return $response;
     }
 }
