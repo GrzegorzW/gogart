@@ -1,0 +1,10 @@
+Gogart\Model\Shared\Price:
+    type: embeddable
+
+    embedded:
+        amount:
+            class: Gogart\Model\Shared\Amount
+            columnPrefix: false
+        currency:
+            class: Gogart\Model\Shared\Currency
+            columnPrefix: false

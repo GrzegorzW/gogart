@@ -1,0 +1,6 @@
+Gogart\Model\Shared\Amount:
+    type: embeddable
+
+    fields:
+        amount:
+            type: integer

@@ -1,7 +1,19 @@
 parameters:
+    locale: 'en'
+
+imports:
+    - { resource: "services/*.yaml" }
 
 services:
     _defaults:
         autowire: false
         autoconfigure: false
         public: false
+
+    request.param_converter:
+        class: Gogart\Http\Request\ParamConverter\RequestParamConverter
+        arguments:
+            - '@jms_serializer'
+            - '@validator'
+        tags:
+            - { name: request.param_converter, priority: -2 }

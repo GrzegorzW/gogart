@@ -1,0 +1,6 @@
+services:
+    repository.product:
+        class: Gogart\Infrastructure\Model\Product\Repository\ProductRepository
+        factory: ["@doctrine", "getRepository"]
+        arguments:
+            - Gogart\Model\Product\Product

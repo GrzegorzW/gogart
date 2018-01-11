@@ -1,0 +1,21 @@
+Gogart\Model\Product\Product:
+    type: entity
+    repositoryClass: Gogart\Infrastructure\Model\Product\Repository\ProductRepository
+
+    id:
+        id:
+            type: uuid
+            generator: { strategy: NONE }
+
+    fields:
+        removedAt:
+            type: datetime_immutable
+            nullable: true
+
+    embedded:
+        title:
+            class: Gogart\Model\Product\Title
+            columnPrefix: false
+        price:
+            class: Gogart\Model\Shared\Price
+            columnPrefix: price_

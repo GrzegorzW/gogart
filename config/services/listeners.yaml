@@ -1,0 +1,8 @@
+services:
+    listener.request_body:
+        class: Gogart\Http\Request\Listener\BodyListener
+        tags:
+            - name: 'kernel.event_listener'
+              event: 'kernel.request'
+              method: 'onKernelRequest'
+              priority: 30

@@ -1,0 +1,6 @@
+Gogart\Model\Shared\Currency:
+    type: embeddable
+
+    fields:
+        currency:
+            type: string

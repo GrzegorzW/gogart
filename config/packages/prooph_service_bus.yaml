@@ -1,0 +1,3 @@
+prooph_service_bus:
+    command_buses:
+        gogart_command_bus: ~

@@ -1,0 +1,6 @@
+Gogart\Model\Product\Title:
+    type: embeddable
+
+    fields:
+        title:
+            type: string
